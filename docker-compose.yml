@@ -1,0 +1,21 @@
+version: '2.1'
+
+volumes:
+  loremipsum_grafana: {}
+
+services:
+  loremipsum_db:
+    image: docker.io/timescale/timescaledb:latest-pg14
+    container_name: loremipsum_db
+    environment:
+      - TIMESCALE_TELEMETRY=off
+      - POSTGRES_USER=loremipsum
+      - POSTGRES_PASSWORD=deeznuts47
+    ports:
+      - "5432:5432"
+    networks:
+      - loremipsum_network
+
+networks:
+  loremipsum_network:
+    driver: host

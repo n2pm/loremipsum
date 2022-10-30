@@ -1,0 +1,14 @@
+[workspace]
+members = ["crates/*"]
+
+[workspace.dependencies]
+anyhow = "1.0.66"
+chrono = "0.4.22"
+common = { version = "0.1.0", path = "crates/common" }
+fern = "0.6.1"
+log = "0.4.17"
+serde = { version = "1.0.147", features = ["derive"] }
+serde_json = { version = "1.0.87", features = ["raw_value"] }
+thiserror = "1.0.37"
+tokio = { version = "1.21.2", features = ["full"] }
+toml = "0.5.9"

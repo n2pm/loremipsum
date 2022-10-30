@@ -1,0 +1,20 @@
+[package]
+name = "client"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = { workspace = true }
+common = { workspace = true }
+fern = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+toml = { workspace = true }
+
+isahc = { version = "1.7.2", features = ["json"] }
+futures = "0.3.25"
+craftping = { git = "https://github.com/kiwiyou/craftping.git", version = "0.3.1", features = ["async-tokio"] }
