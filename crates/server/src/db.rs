@@ -44,7 +44,7 @@ pub async fn get_tasks(count: usize, pool: &PgPool) -> Result<Vec<QueueWork>, sq
         r#"
     select type as "type: _", data, id
     from pending_jobs
-    order by time asc
+    order by time desc
     limit $1
     "#,
         Some(count as i64)
