@@ -1,0 +1,200 @@
+{
+  "db": "PostgreSQL",
+  "0622d33c9f425232db4e18e854e823ee9baaf0b6b42613545e7603fc49765275": {
+    "describe": {
+      "columns": [
+        {
+          "name": "type: _",
+          "ordinal": 0,
+          "type_info": {
+            "Custom": {
+              "kind": {
+                "Enum": [
+                  "ping_server",
+                  "get_player",
+                  "test_whitelist"
+                ]
+              },
+              "name": "job_type"
+            }
+          }
+        },
+        {
+          "name": "data",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "id",
+          "ordinal": 2,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n    select type as \"type: _\", data, id\n    from pending_jobs\n    order by time desc\n    limit $1\n    "
+  },
+  "0c0e183cc7e96e12b4fa98f5de12e3ccd753bf451f815075f9dd6bc589209f77": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "\n                                insert into seen_players_data (time, id, name, connected_to)\n                                values (now(), $1, $2, $3)"
+  },
+  "2d8107ed347398c46b6aea6617b5bdbe2f9f49ad11375bfbb4b4e167211f0a3a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "delete from pending_jobs where id = $1"
+  },
+  "311dd7c05c12408abfbe7dab000687defe924e52d2ca2ed3c7d95bc4a2db039c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "insert into api_keys (key, admin) values ($1, false)"
+  },
+  "4de23fa986f0797bd18f58c06a84be8b39727d42182076b6d53c8eda7a2c5fec": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          {
+            "Custom": {
+              "kind": {
+                "Enum": [
+                  "ping_server",
+                  "get_player",
+                  "test_whitelist"
+                ]
+              },
+              "name": "job_type"
+            }
+          },
+          "Varchar"
+        ]
+      }
+    },
+    "query": "\n    insert into pending_jobs (time, type, data)\n    values (now(), $1, $2)\n    "
+  },
+  "62a95913be5a69999a1a31a96224ad9dcbf774fa38df13812e5fc65da3bb14ec": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "\n                        insert into seen_servers (id)\n                        values ($1)\n                        on conflict do nothing\n                        "
+  },
+  "695d9690323bef0cba686448a5053968ebbb5720a7ca5b62a7f4538c972424d2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "insert into api_keys (key, admin) values ($1, true)"
+  },
+  "6b8d578d608d567f032ba187aac49da0c06355145d09a8ffdb49c427c5711ed1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "count",
+          "ordinal": 0,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "select count(*) from api_keys where admin = true"
+  },
+  "906d2325e07efbaac3e84fd07994afc0b8720fb34baecb314f7e2123a83961dc": {
+    "describe": {
+      "columns": [
+        {
+          "name": "admin",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "select admin from api_keys where key = $1"
+  },
+  "96300d314a03a1599c7b71fbcd9e92df78bc3071c27891a524a9145e4daa9166": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Bytea",
+          "Int4",
+          "Int4",
+          "Varchar",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n                        insert into seen_servers_data\n                        (time, id, motd, favicon, current_player_count,\n                        max_player_count, server_version, protocol_version)\n                        values (now(), $1, $2, $3, $4, $5, $6, $7)\n                        "
+  },
+  "b728a060b027d91fcb6713680bc4afff49dd68be5dd9d541aa4abab981e9e103": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "\n                            insert into seen_players (id)\n                            values ($1)\n                            on conflict do nothing\n                            "
+  }
+}

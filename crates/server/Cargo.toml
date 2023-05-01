@@ -18,5 +18,5 @@ tokio = { workspace = true }
 toml = { workspace = true }
 
 axum = { git = "https://github.com/tokio-rs/axum", features = ["http2", "headers"] }
-sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "json"] }
+sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "json", "offline"] }
 uuid = { version = "1.2.1", features = ["v4"] }
