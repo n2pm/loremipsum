@@ -91,7 +91,7 @@
                 database = "loremipsum"
 
                 [api]
-                address = "127.0.0.1:${toString cfgServer.port}"
+                address = "0.0.0.0:${toString cfgServer.port}"
               '';
             in {
               description = "loremipsum server";
