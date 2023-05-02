@@ -106,7 +106,7 @@
             };
 
             services.postgresql =
-              let postgresqlPackages = services.postgresql.package.pkgs;
+              let postgresqlPackages = options.services.postgresql.package.pkgs;
               in {
                 enable = mkDefault true;
                 authentication = "host loremipsum loremipsum localhost trust";
