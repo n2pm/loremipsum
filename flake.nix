@@ -105,21 +105,23 @@
               };
             };
 
-            services.postgresql =
-              let postgresqlPackages = options.services.postgresql.package.pkgs;
-              in {
-                enable = mkDefault true;
-                authentication = "host loremipsum loremipsum localhost trust";
-                ensureDatabases = [ "loremipsum" ];
-                ensureUsers = [{
-                  name = "loremipsum";
-                  ensurePermissions."DATABASE \"loremipsum\"" =
-                    "ALL PRIVILEGES";
-                }];
+            services.postgresql = {
+              enable = mkDefault true;
+              authentication = ''
+                local loremipsum loremipsum trust
+                host loremipsum loremipsum localhost trust
+              '';
+              ensureDatabases = [ "loremipsum" ];
 
-                extraPlugins = with postgresqlPackages; [ timescaledb ];
-                settings.shared_preload_libraries = "timescaledb";
-              };
+              ensureUsers = [{
+                name = "loremipsum";
+                ensurePermissions."DATABASE \"loremipsum\"" = "ALL PRIVILEGES";
+              }];
+
+              package = lib.mkForce pkgs.postgresql_13;
+              extraPlugins = with pkgs.postgresql_13.pkgs; [ timescaledb ];
+              settings.shared_preload_libraries = "timescaledb";
+            };
           };
         };
     };
