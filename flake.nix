@@ -27,13 +27,30 @@
             nativeBuildInputs = with pkgs; [ openssl ];
           };
 
+          packages.loremipsum-client = craneLib.buildPackage {
+            pname = "client";
+            version = "0.1.0";
+            src = src;
+            extraCargoFlags = "-p client";
+            doCheck = false;
+
+            buildInputs = with pkgs; [ pkg-config ];
+            nativeBuildInputs = with pkgs; [ openssl ];
+          };
+
           apps.loremipsum-server = flake-utils.lib.mkApp {
             name = "loremipsum-server";
             drv = packages.loremipsum-server;
           };
 
+          apps.loremipsum-client = flake-utils.lib.mkApp {
+            name = "loremipsum-client";
+            drv = packages.loremipsum-client;
+          };
+
           devShell = pkgs.mkShell {
-            inputsFrom = [ packages.loremipsum-server ];
+            inputsFrom =
+              [ packages.loremipsum-server packages.loremipsum-client ];
             nativeBuildInputs = with pkgs; [
               rustc
               cargo
@@ -48,8 +65,8 @@
         let
           cfgServer = config.services.loremipsum-server;
           pkgServer = self.packages.${pkgs.system}.loremipsum-server;
-          #cfgClient = config.services.loremipsum-client;
-          #pkgClient = self.packages.${pkgs.system}.loremipsum-client;
+          cfgClient = config.services.loremipsum-client;
+          pkgClient = self.packages.${pkgs.system}.loremipsum-client;
         in {
           options.services.loremipsum-server = {
             enable = mkEnableOption description;
@@ -65,7 +82,16 @@
             };
           };
 
-          config = mkIf cfgServer.enable {
+          options.services.loremipsum-client = {
+            enable = mkEnableOption description;
+
+            configPath = mkOption {
+              type = types.str;
+              default = "/etc/loremipsum-client.toml";
+            };
+          };
+
+          config = (mkIf cfgServer.enable {
             users = {
               users.loremipsum = {
                 isSystemUser = true;
@@ -122,7 +148,17 @@
               extraPlugins = with pkgs.postgresql_13.pkgs; [ timescaledb ];
               settings.shared_preload_libraries = "timescaledb";
             };
-          };
+          }) // (mkIf cfgClient.enable {
+            systemd.services.loremipsum-client = {
+              description = "loremipsum client";
+              after = [ "network.target" ];
+              wantedBy = [ "multi-user.target" ];
+
+              serviceConfig = {
+                ExecStart = "${pkgClient}/bin/client ${cfgClient.configPath}";
+              };
+            };
+          });
         };
     };
 }
