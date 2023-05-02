@@ -77,11 +77,11 @@
 
             systemd.services.loremipsum-server = let
               cfgFile = pkgs.writeText "config.toml" ''
-                schedules = {
-                ${concatStringsSep "\n"
-                (mapAttrsToList (name: schedule: ''${name} = "${schedule}"'')
-                  cfgServer.schedules)}
-                }
+                schedules = { ${
+                  concatStringsSep ", "
+                  (mapAttrsToList (name: schedule: ''${name} = "${schedule}"'')
+                    cfgServer.schedules)
+                } }
 
                 [database]
                 host = "localhost"
