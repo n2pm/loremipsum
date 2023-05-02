@@ -58,6 +58,11 @@
               type = types.int;
               default = 56552;
             };
+
+            schedules = mkOption {
+              type = types.attrsOf types.str;
+              default = { };
+            };
           };
 
           config = mkIf cfgServer.enable {
@@ -66,43 +71,49 @@
                 isSystemUser = true;
                 group = "loremipsum";
               };
+
+              groups.loremipsum = { };
             };
 
-            groups.loremipsum = { };
-          };
+            systemd.services.loremipsum-server = let
+              cfgFile = pkgs.writeText "config.toml" ''
+                schedules = {
+                ${concatStringsSep "\n"
+                (mapAttrsToList (name: schedule: ''${name} = "${schedule}"'')
+                  cfgServer.schedules)}
+                }
 
-          systemd.servicesloremipsum-server = let
-            cfgFile = pkgs.writeText "config.toml" ''
-              [database]
-              host = "localhost"
-              port = 5432
-              username = "loremipsum"
-              password = "loremipsum"
-              database = "loremipsum"
+                [database]
+                host = "localhost"
+                port = 5432
+                username = "loremipsum"
+                password = "loremipsum"
+                database = "loremipsum"
 
-              [api]
-              address = "127.0.0.1:${toString cfgServer.port}"
-            '';
-          in {
-            description = "loremipsum server";
-            after = [ "network.target" ];
-            wantedBy = [ "multi-user.target" ];
+                [api]
+                address = "127.0.0.1:${toString cfgServer.port}"
+              '';
+            in {
+              description = "loremipsum server";
+              after = [ "network.target" ];
+              wantedBy = [ "multi-user.target" ];
 
-            serviceConfig = {
-              User = "loremipsum";
-              Group = "loremipsum";
-              ExecStart = "${pkgServer}/bin/server ${cfgFile}";
+              serviceConfig = {
+                User = "loremipsum";
+                Group = "loremipsum";
+                ExecStart = "${pkgServer}/bin/server ${cfgFile}";
+              };
             };
-          };
 
-          services.postgresql = {
-            enable = mkDefault true;
-            authentication = "host loremipsum loremipsum localhost trust";
-            ensureDatabases = [ "loremipsum" ];
-            ensureUsers = [{
-              name = "loremipsum";
-              ensurePermissions."DATABASE \"loremipsum\"" = "ALL PRIVILEGES";
-            }];
+            services.postgresql = {
+              enable = mkDefault true;
+              authentication = "host loremipsum loremipsum localhost trust";
+              ensureDatabases = [ "loremipsum" ];
+              ensureUsers = [{
+                name = "loremipsum";
+                ensurePermissions."DATABASE \"loremipsum\"" = "ALL PRIVILEGES";
+              }];
+            };
           };
         };
     };
