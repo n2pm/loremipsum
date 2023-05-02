@@ -113,6 +113,10 @@
                 name = "loremipsum";
                 ensurePermissions."DATABASE \"loremipsum\"" = "ALL PRIVILEGES";
               }];
+
+              extraPlugins = with services.postgresql.package.pkgs;
+                [ timescaledb ];
+              settings.shared_preload_libraries = "timescaledb";
             };
           };
         };
