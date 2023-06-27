@@ -128,13 +128,13 @@
                   local loremipsum loremipsum trust
                   host loremipsum loremipsum localhost trust
                 '';
-                ensureDatabases = [ "loremipsum" ];
 
-                ensureUsers = [{
-                  name = "loremipsum";
-                  ensurePermissions."DATABASE \"loremipsum\"" =
-                    "ALL PRIVILEGES";
-                }];
+                #ensureDatabases = [ "loremipsum" ];
+                #ensureUsers = [{
+                #  name = "loremipsum";
+                #  ensurePermissions."DATABASE \"loremipsum\"" =
+                #    "ALL PRIVILEGES";
+                #}];
 
                 package = lib.mkForce pkgs.postgresql_13;
                 extraPlugins = with pkgs.postgresql_13.pkgs; [ timescaledb ];
